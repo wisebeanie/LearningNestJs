@@ -13,8 +13,8 @@ export class ResponseMessage{
 
     public error(code:number,message:string = "Error"):ResponseMessage{
         this.code = code;
-        this.message=message;
         this.isSuccess=false;
+        this.message=message;
         return this;
     }
 

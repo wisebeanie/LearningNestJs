@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post } from '@nestjs/common';
 import { ResponseMessage } from 'src/config/response.util';
 import { User } from 'src/entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -18,28 +18,30 @@ export class UserController {
     }
 
     @Get('/:id')
-    findOne(@Param('id') id: string): Promise<User> {
-        return this.userService.findOne(id);
+    async findOne(@Param('id') id: string) {
+        const result = await this.userService.findOne(id);
+
+        return result
     }
 
     @Delete('/:id')
-    async remove(@Param('id') id: string): Promise<void> {
-        await this.userService.remove(id);
+    async remove(@Param('id') id: string) {
+        const result = await this.userService.remove(id);
+
+        return result;
     }
 
     @Post()
     async createUser(@Body() userData: CreateUserDto) {
         const result = await this.userService.createUser(userData);
-        let response = new ResponseMessage().success("성공").body({"insertId": result.id}).build();
 
-        return response;
+        return result;
     }
 
     @Patch('/:id')
-    async updateUser(@Param('id') id: number, @Body() userData: UpdateUserDto) {
+    async updateUser(@Param('id') id: string, @Body() userData: UpdateUserDto) {
         const result = await this.userService.updateUser(id, userData);
-        let response = new ResponseMessage().success("성공").build();
 
-        return response;
+        return result;
     }
 }
