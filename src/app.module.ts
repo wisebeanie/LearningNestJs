@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RavenInterceptor, RavenModule } from 'nest-raven';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
@@ -17,9 +19,14 @@ import { UserModule } from './user/user.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
-    UserModule
+    UserModule, RavenModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, 
+    {
+    provide: APP_INTERCEPTOR,
+    useValue: new RavenInterceptor(),
+    },
+  ],
 })
 export class AppModule {}
