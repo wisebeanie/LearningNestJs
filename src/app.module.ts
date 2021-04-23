@@ -5,6 +5,8 @@ import { RavenInterceptor, RavenModule } from 'nest-raven';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
+import { AuthController } from './auth/auth.controller';
+import { AuthService } from './auth/auth.service';
 
 @Module({
   imports: [
@@ -21,12 +23,12 @@ import { UserModule } from './user/user.module';
     }),
     UserModule, RavenModule
   ],
-  controllers: [AppController],
+  controllers: [AppController, AuthController],
   providers: [AppService, 
     {
     provide: APP_INTERCEPTOR,
     useValue: new RavenInterceptor(),
-    },
+    }, AuthService,
   ],
 })
 export class AppModule {}
