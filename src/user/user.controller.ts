@@ -44,4 +44,13 @@ export class UserController {
 
         return result;
     }
+
+    @Get('/:id/img')
+    async getUserProfileImg(@Param('id') id: string) {
+        const result = await this.userService.getUserProfileImg(id);
+
+        return result;
+    }
+
+
 }

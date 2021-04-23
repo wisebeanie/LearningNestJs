@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ResponseMessage } from 'src/config/response.util';
+import { profileImg } from 'src/entities/profileImg.entity';
 import { User } from 'src/entities/user.entity';
-import { getManager, Repository } from 'typeorm';
+import { getConnection, getManager, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -10,7 +11,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserService {
     constructor(
         @InjectRepository(User)
-        private userRepository: Repository<User>
+        private userRepository: Repository<User>,
+
+        @InjectRepository(profileImg)
+        private profileImgRepository: Repository<profileImg>
     ) {}
 
 
@@ -68,6 +72,37 @@ export class UserService {
             
             return new ResponseMessage().success("성공").build();
         } catch (err) {
+            return new ResponseMessage().error(400, err.message);
+        }
+    }
+
+    async getUserProfileImg(id: string) {
+        const queryRunner = await getConnection().createQueryRunner();
+        await queryRunner.startTransaction();
+
+        try {
+            const checkUser = await this.findOne(id);
+            if (checkUser.statusCode == 404) {
+                return new ResponseMessage().error(404, `User with Id ${id} not found`).build();
+            }
+            const result = await this.userRepository.query(`SELECT firstName, lastName FROM user WHERE user.id = ${id};`);
+
+            const imgResult = await this.profileImgRepository.query(`SELECT profileImgUrl FROM profile_img WHERE userId = ${id};`);
+
+            await queryRunner.commitTransaction();
+            await queryRunner.release();
+
+            const imgs: string[] = [];
+            for (const img of imgResult) {
+                imgs.push(img.profileImgUrl);
+            }
+            result[0].profileImg = imgs;
+
+            return new ResponseMessage().success("성공").body(result).build();
+        } catch(err) {
+            await queryRunner.rollbackTransaction();
+            await queryRunner.release();
+
             return new ResponseMessage().error(400, err.message);
         }
     }
