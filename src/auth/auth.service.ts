@@ -18,4 +18,8 @@ export class AuthService {
     async login(url: string, headers: any) {
         return await this.http.post(url, '', { headers }).toPromise();
     }
+
+    async getProfile(url: string, headers: any) {
+        return await this.http.get(url, { headers }).toPromise();
+    }
 }
