@@ -7,6 +7,8 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
+import { AddressController } from './address/address.controller';
+import { AddressService } from './address/address.service';
 
 @Module({
   imports: [
@@ -23,12 +25,12 @@ import { AuthService } from './auth/auth.service';
     }),
     UserModule, RavenModule
   ],
-  controllers: [AppController, AuthController],
+  controllers: [AppController, AuthController, AddressController],
   providers: [AppService, 
     {
     provide: APP_INTERCEPTOR,
     useValue: new RavenInterceptor(),
-    }, AuthService,
+    }, AuthService, AddressService,
   ],
 })
 export class AppModule {}
