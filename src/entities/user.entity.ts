@@ -16,4 +16,10 @@ export class User {
 
   @Column()
   email: string;
+
+  @Column()
+  latitude: number;
+
+  @Column()
+  longitude: number;
 }

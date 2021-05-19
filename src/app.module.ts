@@ -9,6 +9,7 @@ import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { AddressController } from './address/address.controller';
 import { AddressService } from './address/address.service';
+import { AddressModule } from './address/address.module';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { AddressService } from './address/address.service';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
-    UserModule, RavenModule
+    UserModule, RavenModule, AddressModule
   ],
   controllers: [AppController, AuthController, AddressController],
   providers: [AppService, 
